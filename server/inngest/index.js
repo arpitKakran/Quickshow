@@ -26,6 +26,8 @@ const syncUserCreation= inngest.createFunction(
 
 
         await User.create(userData)
+
+        console.log(userData)
     }
 )
 
