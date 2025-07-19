@@ -9,7 +9,7 @@ const Footer = () => {
                 <div className="md:max-w-96">
                     <img alt="" className="h-11" src={assets.logo} />
                     <p className="mt-6 text-sm">
-                        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                    Your one-stop hub to discover the latest movie releases, explore cast and genre details, check runtimes, and book tickets instantly at nearby theatres
                     </p>
                     <div className="flex items-center gap-2 mt-4">
                         <img src={assets.googlePlay} alt="google play" className="h-9 w-auto" />
@@ -29,8 +29,10 @@ const Footer = () => {
                     <div>
                         <h2 className="font-semibold mb-5">Get in touch</h2>
                         <div className="text-sm space-y-2">
-                            <p>+1-234-567-890</p>
-                            <p>contact@example.com</p>
+                            <p>+1 234 567 890</p>
+                            <p>Visit Linked in Profile</p>
+                            <p>arpitkakran@gmail.com</p>
+                            
                         </div>
                     </div>
                 </div>

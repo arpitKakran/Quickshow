@@ -70,19 +70,29 @@ export const createBooking= async(req, res) => {
             quantity:1
         }]
 
-        const session= await stripeInstance.checkout.sessions.create({
-            success_url: `${origin}/loading/my-bookings`,
-            cancel_url: `${origin}/my-bookings`,
-            line_items: line_items,
-            mode: 'payment',
-            metadata : {
-                bookingId: booking._id.toString()
-            },
-            expires_at: Math.floor(Date.now()/1000)+30 * 60,
-        })
+        const session = await stripeInstance.checkout.sessions.create({
+  success_url: `${origin}/loading/my-bookings`,
+  cancel_url: `${origin}/my-bookings`,
+  line_items,
+  mode: 'payment',
+  payment_intent_data: {
+    metadata: {
+      bookingId: booking._id.toString()
+    }
+  },
+  expires_at: Math.floor(Date.now() / 1000) + 30 * 60
+});
 
         booking.paymentLink= session.url
         await booking.save()
+
+
+        await inngest.send({
+            name: "app/checkpayment",
+            data: {
+                bookingId: booking._id.toString()
+            }
+        })
 
 
 
