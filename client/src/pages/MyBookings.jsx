@@ -5,22 +5,38 @@ import Loading from '../components/Loading'
 import BlurCircle from '../components/BlurCircle'
 import timeFormat from '../lib/timeFormat'
 import { dateFormat } from '../lib/dateFormat'
+import { useAppContext } from '../context/app.context'
 
 const MyBookings = () => {
 
   const currency=import.meta.env.VITE_CURRENCY
 
+  const {axios,getToken,user,image_base_url}= useAppContext()
+
   const[bookings,setBookings]= useState()
   const[isLoading,setisLoading]= useState(true)
 
   const getMyBookings= async()=> {
-    setBookings(dummyBookingData)
+    try {
+      const {data}= await axios.get('/api/user/bookings',{headers : {Authorization: `Bearer ${await getToken()}`}})
+
+      if(data.success) {
+        setBookings(data.bookings)
+      }
+      
+    } catch (error) {
+      console.log(error)
+      
+    }
     setisLoading(false)
   }
 
   useEffect(()=>{
-    getMyBookings()
-  },[])
+    if(user) {
+      getMyBookings()
+    }
+    
+  },[user])
 
 
   return !isLoading? (
@@ -35,7 +51,7 @@ const MyBookings = () => {
         <div key={index} className='flex flex-col md:flex-row justify-between bg-primary/8 border border-primary/20 rounded-lg mt-4 p-2 max-w-3xl'>
           <div className='flex flex-col md:flex-row'>
 
-            <img src={item.show.movie.poster_path} alt="" className='md:max-w-45 aspect-video h-auto object-cover object-bottom rounded' />
+            <img src={image_base_url+ item.show.movie.poster_path} alt="" className='md:max-w-45 aspect-video h-auto object-cover object-bottom rounded' />
             <div className='flex flex-col p-4'>
               <p className='text-lg font-semibold'>{item.show.movie.title}</p>
               <p className='text-gray-400 text-sm'>{timeFormat(item.show.movie.runtime)}</p>
@@ -46,7 +62,7 @@ const MyBookings = () => {
           <div className='flex flex-col md:items-end md:text-right justify-between p-4'>
               <div className='flex items-center gap-4'>
                 <p className='text-2xl font-semibold mb-3'>{currency}{item.amount}</p>
-                {!item.isPaid && <button className='bg-primary px-4 py-1.5 mb-3 text-sm rounded-full fonr-medium cursor-pointer'>Pay Now</button>}
+                {!item.isPaid && <button className='bg-primary px-4 py-1.5 mb-3 text-sm rounded-full font-medium cursor-pointer'>Pay Now</button>}
               </div>
               <div>
                 <p>

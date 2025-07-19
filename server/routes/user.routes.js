@@ -1,5 +1,5 @@
 import express from 'express'
-import { getFavourites, getUserBookings, updateFavourite } from '../controllers/user.controller.js'
+import { getFavourites, getUserBookings, updateFavourite } from '../controllers/user.controllers.js'
 
 const userRouter= express.Router()
 

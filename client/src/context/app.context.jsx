@@ -52,9 +52,9 @@ export const AppProvider= ({children})=> {
         }
     }
 
-    const fetchfavouriteMovies= async ()=> {
+    const fetchFavouriteMovies= async ()=> {
         try {
-            const {data}= await axios.get('/api/show/favourites',{headers: {Authorization: `Bearer ${await getToken()}`}})
+            const {data}= await axios.get('/api/user/favourites',{headers: {Authorization: `Bearer ${await getToken()}`}})
 
             if(data.success) {
                 setFavouriteMovies(data.movies)
@@ -73,11 +73,11 @@ export const AppProvider= ({children})=> {
     useEffect(()=> {
         if(user){
             fetchIsAdmin()
-            fetchfavouriteMovies()
+            fetchFavouriteMovies()
         }
     },[user])
 
-    const value= { axios,fetchIsAdmin,user,getToken,navigate,isAdmin,shows,favouriteMovies,fetchfavouriteMovies,image_base_url }
+    const value= { axios,fetchIsAdmin,user,getToken,navigate,isAdmin,shows,favouriteMovies,fetchFavouriteMovies,image_base_url }
     return (
         <AppContext.Provider value= {value}>
             {children}

@@ -1,5 +1,6 @@
 import Booking from "../models/booking.models.js";
 import Show from "../models/show.models.js"
+import stripe from 'stripe'
 
 const checkSeatAvailability= async(showId,selectedSeats)=> {
 try {
@@ -41,7 +42,7 @@ export const createBooking= async(req, res) => {
             user: userId,
             show: showId,
             amount: showData.showPrice* selectedSeats.length,
-            bookedSeats: selectedSeats
+            bookedSeats: selectedSeats,
         })
 
         selectedSeats.map((seat)=> {
@@ -54,8 +55,38 @@ export const createBooking= async(req, res) => {
 
         //stripe gateway 
 
+        const stripeInstance= new stripe(process.env.STRIPE_SECRET_KEY) 
 
-        res.json({success: true, message: 'Booked Successfully'})
+        // creating line items fir stripe
+
+        const line_items = [{
+            price_data: {
+                currency: 'usd',
+                product_data: {
+                    name: showData.movie.title
+                },
+                unit_amount : Math.floor(booking.amount)*100
+            },
+            quantity:1
+        }]
+
+        const session= await stripeInstance.checkout.sessions.create({
+            success_url: `${origin}/loading/my-bookings`,
+            cancel_url: `${origin}/my-bookings`,
+            line_items: line_items,
+            mode: 'payment',
+            metadata : {
+                bookingId: booking._id.toString()
+            },
+            expires_at: Math.floor(Date.now()/1000)+30 * 60,
+        })
+
+        booking.paymentLink= session.url
+        await booking.save()
+
+
+
+        res.json({success: true, url:session.url})
         
     } catch (error) {
 
@@ -73,7 +104,7 @@ export const getOccupiedSeats= async (req,res)=> {
 
         const occupiedSeats= Object.keys(showData.occupiedSeats)
 
-        res.json({success:true, message:error.message})
+        res.json({success:true, occupiedSeats})
 
     } catch (error) {
         console.log(error.message)
