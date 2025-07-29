@@ -1,10 +1,7 @@
 
-
 import axios from "axios";
-
 import Movie from "../models/movie.models.js";
 import Show from "../models/show.models.js";
-
 
 
 export const getNowPlayingMovies = async (req, res) => {
@@ -31,7 +28,6 @@ export const getNowPlayingMovies = async (req, res) => {
     });
   }
 };
-
 
 
 export const addShow = async (req, res) => {
@@ -106,7 +102,7 @@ export const addShow = async (req, res) => {
   }
 };
 
-// API to get asll shows from the database
+// API to get all shows from the database
 
 export const getShows= async(req,res) => {
   try {
