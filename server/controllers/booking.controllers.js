@@ -3,6 +3,23 @@ import Show from "../models/show.models.js"
 import stripe from 'stripe'
 import { inngest } from "../inngest/index.js";
 
+export const getOccupiedSeats= async (req,res)=> {
+    try {
+        
+        const {showId}= req.params
+        const showData= await Show.findById(showId)
+
+        const occupiedSeats= Object.keys(showData.occupiedSeats)
+
+        res.json({success:true, occupiedSeats})
+
+    } catch (error) {
+        console.log(error.message)
+        res.json({success:false, message: error.message})
+        
+    }
+}
+
 const checkSeatAvailability= async(showId,selectedSeats)=> {
 try {
     
@@ -107,19 +124,3 @@ export const createBooking= async(req, res) => {
     }
 }
 
-export const getOccupiedSeats= async (req,res)=> {
-    try {
-        
-        const {showId}= req.params
-        const showData= await Show.findById(showId)
-
-        const occupiedSeats= Object.keys(showData.occupiedSeats)
-
-        res.json({success:true, occupiedSeats})
-
-    } catch (error) {
-        console.log(error.message)
-        res.json({success:false, message: error.message})
-        
-    }
-}
